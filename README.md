@@ -1,4 +1,5 @@
 # Проектная работа "Веб-ларек"
+https://github.com/al-lumiere/weblarek.git
 
 Стек: HTML, SCSS, TS, Webpack
 
