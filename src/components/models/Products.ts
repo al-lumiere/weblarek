@@ -1,4 +1,4 @@
-import { IItem } from "../../../types/index";
+import { IItem } from "../../types/index";
 
 export class Products {
   private allItems: IItem[];

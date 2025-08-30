@@ -1,4 +1,4 @@
-import { ICustomer, TPayment} from "../../../types/index";
+import { ICustomer, TPayment} from "../../types/index";
 
 export class CustomerInfo {
   private payment: TPayment;

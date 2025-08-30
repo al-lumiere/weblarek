@@ -1,13 +1,13 @@
 import './scss/styles.scss';
 import { apiProducts } from './utils/data';
 import { Api } from "./components/base/Api";
-import { Server } from "./components/base/models/Server";
+import { Server } from "./components/models/Server";
 import type { IItem } from "./types";
 
 
-import { Products } from './components/base/models/Products';
-import { Basket } from './components/base/models/Basket';
-import { CustomerInfo } from './components/base/models/CustomerInfo';
+import { Products } from './components/models/Products';
+import { Basket } from './components/models/Basket';
+import { CustomerInfo } from './components/models/CustomerInfo';
 
 
 const productsModel = new Products();

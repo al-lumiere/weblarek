@@ -1,4 +1,4 @@
-import type { IApi, IItem, ApiProductsResponse, OrderRequest, OrderResponse } from "../../../types/index";
+import type { IApi, IItem, ApiProductsResponse, OrderRequest, OrderResponse } from "../../types/index";
 
 export class Server {
   constructor(private readonly api: IApi) {}
