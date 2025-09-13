@@ -1,5 +1,5 @@
 /**
- * Базовый компонент
+ * Базовый компонент, отвечает за разметку
  */
 export abstract class Component<T> {
     protected constructor(protected readonly container: HTMLElement) {
@@ -11,14 +11,14 @@ export abstract class Component<T> {
     // Установить изображение с альтернативным текстом
     protected setImage(element: HTMLImageElement, src: string, alt?: string) {
         if (element) {
-            element.src = src;
+            element.src = `https://larek-api.nomoreparties.co/content/weblarek/${src}`;
             if (alt) {
                 element.alt = alt;
             }
         }
     }
 
-    // Вернуть корневой DOM-элемент
+    // Вернуть корневой DOM-элемент, возвращает обновленный контент
     render(data?: Partial<T>): HTMLElement {
         Object.assign(this as object, data ?? {});
         return this.container;

@@ -1,4 +1,5 @@
-import { ICustomer, TPayment} from "../../types/index";
+import { ICustomer, TPayment } from "../../types/index";
+import { IEvents } from "../base/Events";
 
 export class CustomerInfo {
   private payment: TPayment;
@@ -6,7 +7,10 @@ export class CustomerInfo {
   private phone: string;
   private address: string;
 
-  constructor (customer: ICustomer = { payment: null, email: "", phone: "", address: "" }) {
+  constructor(
+    protected events: IEvents,
+    customer: ICustomer = { payment: null, email: "", phone: "", address: "" }
+  ) {
     this.payment = customer.payment;
     this.email = customer.email;
     this.phone = customer.phone;
@@ -18,9 +22,18 @@ export class CustomerInfo {
     this.email = data.email;
     this.phone = data.phone;
     this.address = data.address;
+    this.events.emit("customerInfoData:changed");
   }
-  public setField<T extends keyof ICustomer>(key: T, value: ICustomer[T]): void {
+  public setField<T extends keyof ICustomer>(
+    key: T,
+    value: ICustomer[T]
+  ): void {
     (this as any)[key] = value;
+    this.events.emit("customerInfoData:changed", {
+      key,
+      value,
+      state: this.getCData(),
+    });
   }
   public getCData(): ICustomer {
     return {
@@ -28,7 +41,7 @@ export class CustomerInfo {
       email: this.email,
       phone: this.phone,
       address: this.address,
-    }
+    };
   }
   public getField<T extends keyof ICustomer>(key: T): ICustomer[T] {
     return (this as any)[key];
@@ -38,6 +51,7 @@ export class CustomerInfo {
     this.email = "";
     this.phone = "";
     this.address = "";
+    this.events.emit("customerInfoData:changed", { state: this.getCData() });
   }
   public validateField<T extends keyof ICustomer>(key: T): boolean {
     const value = this.getField(key);
@@ -65,6 +79,12 @@ export class CustomerInfo {
     const email = this.validateField("email");
     const phone = this.validateField("phone");
     const address = this.validateField("address");
-    return { payment, email, phone, address, isValid: payment && email && phone && address };
+    return {
+      payment,
+      email,
+      phone,
+      address,
+      isValid: payment && email && phone && address,
+    };
   }
 }
