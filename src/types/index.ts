@@ -37,6 +37,7 @@ export type ApiProductsResponse = {
 
 export type OrderRequest = ICustomer & {
   items: string[];
+  total: number; 
 };
 
 export type OrderResponse = {

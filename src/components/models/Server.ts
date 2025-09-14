@@ -4,10 +4,10 @@ export class Server {
   constructor(private readonly api: IApi) {}
 
   async getProducts(): Promise<IItem[]> {
-    const data = await this.api.get<ApiProductsResponse>("/api/weblarek/product/");
+    const data = await this.api.get<ApiProductsResponse>("/product/");
     return data.items;
   }
   async createOrder(payload: OrderRequest): Promise<OrderResponse> {
-    return this.api.post<OrderResponse>("/api/weblarek/order/", payload, "POST");
+    return this.api.post<OrderResponse>("/order/", payload, "POST");
   }
 }

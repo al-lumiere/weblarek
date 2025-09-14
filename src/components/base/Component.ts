@@ -1,6 +1,9 @@
 /**
  * Базовый компонент, отвечает за разметку
  */
+
+import { CDN_URL } from "../../utils/constants";
+
 export abstract class Component<T> {
     protected constructor(protected readonly container: HTMLElement) {
         // Учитывайте что код в конструкторе исполняется ДО всех объявлений в дочернем классе
@@ -11,7 +14,7 @@ export abstract class Component<T> {
     // Установить изображение с альтернативным текстом
     protected setImage(element: HTMLImageElement, src: string, alt?: string) {
         if (element) {
-            element.src = `https://larek-api.nomoreparties.co/content/weblarek/${src}`;
+            element.src = `${CDN_URL}/${src}`;
             if (alt) {
                 element.alt = alt;
             }

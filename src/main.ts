@@ -1,5 +1,6 @@
 import "./scss/styles.scss";
 import { Api } from "./components/base/Api";
+import { API_URL } from "./utils/constants";
 import { Server } from "./components/models/Server";
 import { EventEmitter } from "./components/base/Events";
 
@@ -7,7 +8,7 @@ import { Products } from "./components/models/Products";
 import { Basket } from "./components/models/Basket";
 import { CustomerInfo } from "./components/models/CustomerInfo";
 
-import { Header } from "./components/views/header";
+import { Header } from "./components/views/Header";
 import { Gallery } from "./components/views/Gallery";
 import { ModalWindow } from "./components/views/ModalWindow";
 import { BasketView } from "./components/views/BasketView";
@@ -18,14 +19,12 @@ import {
   PreviewCard,
   BasketCard,
 } from "./components/views/ItemCard";
-import { IItem } from "./types";
-
-const BASE_URL = import.meta.env.VITE_API_ORIGIN;
+import { IItem, OrderRequest, OrderResponse } from "./types";
 
 async function serverRequest() {
   const events = new EventEmitter();
 
-  const api = new Api(BASE_URL);
+  const api = new Api(API_URL);
   const server = new Server(api);
 
   const productsModel = new Products(events);
@@ -211,9 +210,9 @@ async function serverRequest() {
     basketModel.removeBItem(item);
   });
 
-  const buildSuccessedOrder = (): HTMLElement => {
+  const buildSuccessedOrder = (total: number): HTMLElement => {
     const successedOrderView = new SuccessedOrder(events, cloneSuccess());
-    successedOrderView.price = basketModel.getBTotalPrice();
+    successedOrderView.price = total ?? basketModel.getBTotalPrice();
     return successedOrderView.render();
   };
 
@@ -281,7 +280,7 @@ async function serverRequest() {
     syncFormFromModel();
   });
 
-  events.on("submitButton:submit", () => {
+  events.on("submitButton:submit", async () => {
     const modal = document.querySelector(".modal") as HTMLElement;
 
     if (modal.querySelector('form[name="order"]')) {
@@ -303,7 +302,25 @@ async function serverRequest() {
         customerInfoModel.validateField("email") &&
         customerInfoModel.validateField("phone");
       if (!conctactsFValid) return;
-      modalWindowView.render({ content: buildSuccessedOrder(), opened: true });
+
+      try {
+        const payload: OrderRequest = {
+          payment: customerInfoModel.getField("payment"),
+          email: customerInfoModel.getField("email"),
+          phone: customerInfoModel.getField("phone"),
+          address: customerInfoModel.getField("address"),
+          items: basketModel.getBItems().map((i) => i.id),
+          total: basketModel.getBTotalPrice(),
+        };
+
+        const res: OrderResponse = await server.createOrder(payload);
+        modalWindowView.render({
+          content: buildSuccessedOrder(res.total),
+          opened: true,
+        });
+      } catch (err) {
+        console.error("Ошибка при создании заказа:", err);
+      }
       return;
     }
   });
